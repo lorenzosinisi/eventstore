@@ -15,12 +15,14 @@ defmodule Mix.Tasks.EventStore.Drop do
   @shortdoc "Drop the database for the EventStore"
 
   @doc false
-  def run(_args) do
+  def run(args) do
     config = Config.parsed()
+    {opts, _, _} = OptionParser.parse(args, switches: [quiet: :boolean])
+    opts = Keyword.merge([is_mix: false, quiet: false], opts)
 
     if skip_safety_warnings?() or
          Mix.shell().yes?("Are you sure you want to drop the EventStore database?") do
-      EventStore.Tasks.Drop.exec(config, is_mix: true)
+      EventStore.Tasks.Drop.exec(config, opts)
     end
   end
 
